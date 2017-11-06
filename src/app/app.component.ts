@@ -1,3 +1,4 @@
+import * as firebase from 'firebase';
 import { Component } from '@angular/core';
 import { Observable } from 'rxjs/Observable';
 import { AngularFirestore, AngularFirestoreCollection } from 'angularfire2/firestore';
@@ -7,6 +8,7 @@ import { AngularFirestore, AngularFirestoreCollection } from 'angularfire2/fires
     template: `
         <button (click)="addItem()">Add Item</button>
         <button (click)="upsertItem()">Modify Item</button>
+        <button (click)="deleteItem()">Delete Item</button>
         <ul>
             <li *ngFor="let item of items | async">
                 <pre>{{ item | json }}</pre>
@@ -44,5 +46,12 @@ export class AppComponent {
         });
     }
 
-    
+    public deleteField(): void {
+
+        // remove the content field from the document
+        this.itemCollection.doc('Document1').update({
+            content: firebase.firestore.FieldValue.delete()
+        });
+    }
+
 }
