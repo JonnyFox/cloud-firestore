@@ -1,16 +1,31 @@
 import { Component } from '@angular/core';
 import { Observable } from 'rxjs/Observable';
-import { AngularFirestore } from 'angularfire2/firestore';
+import { AngularFirestore, AngularFirestoreCollection } from 'angularfire2/firestore';
 
 @Component({
-  selector: 'app-root',
-  templateUrl: './app.component.html',
-  styleUrls: ['./app.component.scss']
+    selector: 'app-root',
+    template: `
+        <button (click)="addItem()">Add Item</button>
+        <ul>
+            <li *ngFor="let item of items | async">
+                <pre>{{ item | json }}</pre>
+            </li>
+        </ul>
+    `
 })
 export class AppComponent {
     public items: Observable<any[]>;
 
-    constructor(db: AngularFirestore) {
-        this.items = db.collection('/items').valueChanges();
+    private itemCollection: AngularFirestoreCollection<any>;
+
+    constructor(private db: AngularFirestore) {
+        this.itemCollection = db.collection('/items');
+        this.items = this.itemCollection.valueChanges();
+    }
+
+    public addItem(): void {
+        this.itemCollection.add({
+            anotherTest: 'another value'
+        });
     }
 }
